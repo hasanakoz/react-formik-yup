@@ -11,8 +11,20 @@ import { Formik, Form } from "formik";
 import { TextField } from "@mui/material";
 import { TouchAppRounded } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
+import * as yup from "yup";
 
-const loginSchema = {};
+const loginSchema = yup.object().shape({
+  email: yup.string().email().required(),
+  password: yup
+    .string()
+    .required()
+    .min(8, "password must have at least 8 characters")
+    .max(16, "password must have max 16 characters")
+    .matches(/\d+/, "password must include number")
+    .matches(/[a-z]/, "password must include lowercase")
+    .matches(/[A-Z]/, "password must include uppercase")
+    .matches(/[!,?{}><%&$#£+-.]+/, "password must include special characters"),
+});
 
 const Login = () => {
   const navigate = useNavigate();
@@ -63,14 +75,14 @@ const Login = () => {
               actions.setSubmitting(false);
             }}
           >
-            {(
+            {({
               values,
               isSubmitting,
               handleChange,
               handleBlur,
               touched,
-              errors
-            ) => (
+              errors,
+            }) => (
               <Form>
                 <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                   <TextField
